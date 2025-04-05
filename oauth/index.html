@@ -51,12 +51,13 @@
                         name: portal.user.fullName, username:
                             portal.user.username
                     };
+                    document.getElementById("welcome-message").innerText = `Bienvenido, ${results.name}`;
                     document.getElementById("results").innerText =
                         JSON.stringify(results, null, 2);
                 });
             }
             function handleSignedOut() {
-                document.getElementById("results").innerText = 'Signed Out'
+                document.getElementById("results").innerText = 'Sesión cerrada'
             }
         });
     </script>
@@ -67,6 +68,7 @@
     <button id="sign-in" class="btn btn-primary">Sign In</button>
     <button id="sign-out" class="btn btn-primary">Sign Out</button>
     <p>This is a sample HTML file for OAuth2 implementation.</p>
+    <h3 id="welcome-message"></h3>
     <pre><code id="results"></code></pre>
 </body>
 
