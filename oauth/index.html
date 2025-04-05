@@ -1,12 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OAuth2 Example</title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.29/"></script>
+    <!-- Estilo CSS para ajustar el tamaño de fuente y los márgenes -->
+    <style>
+        html,
+        body {
+            font-size: 150%;
+            /* Aumenta el tamaño de la fuente al 150% */
+            margin: 10vh 10vw;
+            /* Establece márgenes de 10% del ancho y alto de la ventana */
+        }
+    </style>
+    <script>
+        require([
+            "esri/portal/Portal",
+            "esri/identity/OAuthInfo",
+            "esri/identity/IdentityManager"
+        ], function (Portal, OAuthInfo, esriId) {
+            const info = new OAuthInfo({
+                appId: "ucu5TwzKyOGjJErc",
+                popup: false // the default
+            });
+            esriId.registerOAuthInfos([info]);
+            esriId
+                .checkSignInStatus(info.portalUrl + "/sharing")
+                .then(() => {
+                    handleSignedIn();
+                })
+                .catch(() => {
+                    handleSignedOut();
+                });
+            document.getElementById("sign-in").addEventListener("click", function () {
+                esriId.getCredential(info.portalUrl + "/sharing");
+            });
+            document.getElementById("sign-out").addEventListener("click", function () {
+                esriId.destroyCredentials();
+                window.location.reload();
+            });
+            function handleSignedIn() {
+                const portal = new Portal();
+                portal.load().then(() => {
+                    const results = {
+                        name: portal.user.fullName, username:
+                            portal.user.username
+                    };
+                    document.getElementById("results").innerText =
+                        JSON.stringify(results, null, 2);
+                });
+            }
+            function handleSignedOut() {
+                document.getElementById("results").innerText = 'Signed Out'
+            }
+        });
+    </script>
 </head>
+
 <body>
     <h1>Welcome to OAuth2 Integration</h1>
+    <button id="sign-in" class="btn btn-primary">Sign In</button>
+    <button id="sign-out" class="btn btn-primary">Sign Out</button>
     <p>This is a sample HTML file for OAuth2 implementation.</p>
+    <pre><code id="results"></code></pre>
 </body>
+
 </html>
